@@ -1,0 +1,562 @@
+openapi: 3.1.1
+info:
+  title: NYC City-Funded Social Service Contracts - Programs(Filters)
+  version: 1.0.0
+
+servers:
+  - url: https://screeningapi.cityofnewyork.us
+  - url: https://sandbox.screeningapi.cityofnewyork.us
+
+paths:
+  /authToken:
+    description: Get Auth token here! Successful responses can be added to request headers for Screening endpoint requests
+    post:
+      operationId: authenticate
+      requestBody:
+        $ref: "#/components/requestBodies/authToken"
+      responses:
+        "200":
+          $ref: "#/components/responses/200_Auth"
+        "400":
+          $ref: "#/components/responses/400"
+        "404":
+          $ref: "#/components/responses/404"
+        "405":
+          $ref: "#/components/responses/405"
+        "406":
+          $ref: "#/components/responses/406"
+        "500":
+          $ref: "#/components/responses/500"
+        "504":
+          $ref: "#/components/responses/504"
+  /forgotPassword:
+    description: Request new password
+    post:
+      operationId: forgotPassword
+      requestBody:
+        $ref: "#/components/requestBodies/forgotPassword"
+      responses:
+        "200":
+          $ref: "#/components/responses/200_Reset_PW"
+        "400":
+          $ref: "#/components/responses/400"
+        "404":
+          $ref: "#/components/responses/404"
+        "405":
+          $ref: "#/components/responses/405"
+        "406":
+          $ref: "#/components/responses/406"
+        "500":
+          $ref: "#/components/responses/500"
+        "504":
+          $ref: "#/components/responses/504"
+  /confirmPassword:
+    description: Confirm new password
+    post:
+      operationId: confirmPassword
+      requestBody:
+        $ref: "#/components/requestBodies/confirmPassword"
+      responses:
+        "200":
+          $ref: "#/components/responses/200_Reset_PW"
+        "400":
+          $ref: "#/components/responses/400"
+        "404":
+          $ref: "#/components/responses/404"
+        "405":
+          $ref: "#/components/responses/405"
+        "406":
+          $ref: "#/components/responses/406"
+        "500":
+          $ref: "#/components/responses/500"
+        "504":
+          $ref: "#/components/responses/504"
+
+  /eligibilityPrograms:
+    description: Retrieve dataset for NYC City-Funded Social Service Contracts - Programs
+    post:
+      operationId: getEligiblePrograms
+      security:
+        - ApiKey: []
+      parameters:
+        - name: interestedPrograms
+          in: query
+          description: Pipe-separated list of program codes a user is interested in. If specified, the Screening API will only return programs included in this list. Program codes should always be passed in upper case.
+          required: false
+          content:
+            text/plain:
+              schema:
+                type: string
+      requestBody:
+        $ref: "#/components/requestBodies/eligibilityPrograms"
+      responses:
+        "200":
+          $ref: "#/components/responses/200"
+        "400":
+          $ref: "#/components/responses/400"
+        "404":
+          $ref: "#/components/responses/404"
+        "405":
+          $ref: "#/components/responses/405"
+        "406":
+          $ref: "#/components/responses/406"
+        "500":
+          $ref: "#/components/responses/500"
+        "504":
+          $ref: "#/components/responses/504"
+
+  /bulkSubmission/import:
+    description: This endpoint accepts a structured CSV of multiple household compositions allowing users to query for potential eligibility in bulk. The response will be a CSV containing the potentially eligible program names and codes.
+    post:
+      operationId: getBulkEligibilityPrograms
+      security:
+        - ApiKey: []
+      parameters:
+        - name: interestedPrograms
+          in: query
+          description: Pipe-separated list of program codes a user is interested in. If specified, the Screening API will only return programs included in this list. Program codes should always be passed in upper case.
+          required: false
+          content:
+            text/plain:
+              schema:
+                type: string
+      requestBody:
+        $ref: "#/components/requestBodies/bulkImport"
+      responses:
+        "200":
+          $ref: "#/components/responses/200"
+        "400":
+          $ref: "#/components/responses/400"
+        "404":
+          $ref: "#/components/responses/404"
+        "405":
+          $ref: "#/components/responses/405"
+        "500":
+          $ref: "#/components/responses/500"
+
+components:
+  securitySchemes:
+    ApiKey:
+      type: apiKey
+      name: Authorization
+      in: header
+  requestBodies:
+    eligibilityPrograms:
+      description: Request payload for individual form submission
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Submission"
+      required: true
+    bulkImport:
+      description: Request payload for bulk import
+      content:
+        text/csv:
+          schema:
+            type: string
+      required: true
+    authToken:
+      description: The retrieved token can be provided in the request header of the Screening endpoints to make an authenticated request.
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Credentials"
+    forgotPassword:
+      description: Payload for a password reset request
+      content:
+        application/json:
+          schema:
+            properties:
+              username:
+                type: string
+    confirmPassword:
+      description: Payload to confirm password change
+      content:
+        application/json:
+          schema:
+            properties:
+              username:
+                type: string
+              newPassword:
+                type: string
+              verificationCode:
+                type: string
+  responses:
+    "200":
+      description: OK
+      content:
+        application/json:
+          schema:
+            properties:
+              type:
+                type: string
+                enum:
+                  - SUCCESS
+                  - FAILURE
+              eligibilePrograms:
+                type: array
+                items:
+                  $ref: "#/components/schemas/EligibleProgram"
+    "200_Reset_PW":
+      description: Success Response
+      content:
+        application/json:
+          schema:
+            properties:
+              type:
+                type: string
+                enum:
+                  - SUCCESS
+                  - FAILURE
+    "200_Auth":
+      description: OK
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Token"
+
+    "400":
+      description: Bad Request
+      content:
+        application/json:
+          schema:
+            properties:
+              type:
+                type: string
+              errors:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ErrorModel"
+
+    "404":
+      description: OK
+      content:
+        application/json:
+          schema:
+            properties:
+              type:
+                type: string
+              errors:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ErrorModel"
+
+    "405":
+      description: OK
+      content:
+        application/json:
+          schema:
+            properties:
+              type:
+                type: string
+                enum:
+                  - SUCCESS
+                  - FAILURE
+              errors:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ErrorModel"
+
+    "406":
+      description: OK
+      content:
+        application/json:
+          schema:
+            properties:
+              type:
+                type: string
+                enum:
+                  - SUCCESS
+                  - FAILURE
+              errors:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ErrorModel"
+
+    "500":
+      description: Internal Server Error
+      content:
+        application/json:
+          schema:
+            properties:
+              type:
+                type: string
+                enum:
+                  - SUCCESS
+                  - FAILURE
+              errors:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ErrorModel"
+
+    "504":
+      description: Gateway Timeout
+      content:
+        application/json:
+          schema:
+            properties:
+              type:
+                type: string
+                enum:
+                  - SUCCESS
+                  - FAILURE
+              errors:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ErrorModel"
+
+  schemas:
+    EligibleProgram:
+      properties:
+        code:
+          type: string
+        name:
+          type: string
+
+    ErrorModel:
+      properties:
+        message:
+          type: string
+        moreInfo:
+          type: string
+        code:
+          type: string
+          enum:
+            - "any.required"
+            - "notFound"
+            - "httpMethodNotAllowed"
+            - "unsupportedContentType"
+            - "internalServerError"
+        elementPath:
+          type: string
+    Credentials:
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+        newPassword:
+          type: string
+    Token:
+      properties:
+        type:
+          type: string
+          description: Success status of request
+          enum:
+            - SUCCESS
+            - FAILURE
+        token:
+          type: string
+          description: Auth token for API requests
+
+    Household:
+      properties:
+        cashOnHand:
+          type: integer
+          format: int32
+          description: How much does your whole household has right now in; cash on hand, checking or saving accounts, stocks, bonds or mutual funds.
+          minimum: 0
+        livingRenting:
+          type: boolean
+          description: Renting the current living situation.
+          default: false
+        housingRentalType:
+          type: string
+          description: The type of rental, if renting.
+          enum:
+            - ""
+            - MarketRate
+            - RentControlled
+            - FamilyHome
+            - Condo
+            - NYCHA
+            - RentRegulatedHotel
+            - Section213
+            - LimitedDividendDevelopment
+            - MitchellLama
+            - RedevelopmentCompany
+            - HDFC
+          default: ""
+        livingOwner:
+          type: boolean
+          description: A household member owns the home or apartment.
+          default: false
+        livingStayingWithFriend:
+          type: boolean
+          description: Staying with a friend
+          default: false
+        livingHotel:
+          type: boolean
+          description: In a hotel.
+          default: false
+        livingShelter:
+          type: boolean
+          description: In a shelter or homeless.
+          default: false
+        livingPreferNotToSay:
+          type: boolean
+          description: Preference to not disclose housing.
+          default: false
+
+    Person:
+      properties:
+        age:
+          type: integer
+          format: int32
+          description: The age of the person.
+        student:
+          type: boolean
+          description: Whether the person is a student or not.
+        studentFulltime:
+          type: boolean
+          description: Whether the person is a full-time student or not.
+        pregnant:
+          type: boolean
+          description: Whether the person is pregnant or not.
+        unemployed:
+          type: boolean
+          description: Whether the person is employed or not.
+        unemployedWorkedLast18Months:
+          type: boolean
+          description: Whether the person is unemployed and worked within the last 18 months.
+        blind:
+          type: boolean
+          description: Whether the person is blind or not.
+        disabled:
+          type: boolean
+          description: Whether the person has disabilities or not.
+        veteran:
+          type: boolean
+          description: Whether the person is a veteran or not
+        benefitsMedicaid:
+          type: boolean
+          description: Whether the person receives Medicaid benefits or not.
+        benefitsMedicaidDisability:
+          type: boolean
+          description: Whether the person receives disability-related Medicaid benefits or not
+        householdMemberType:
+          type: string
+          description: What is this person's relation to the household?
+          enum:
+            - HeadOfHousehold
+            - Child
+            - FosterChild
+            - StepChild
+            - Grandchild
+            - Spouse
+            - Parent
+            - FosterParent
+            - StepParent
+            - Grandparent
+            - SisterBrother
+            - StepSisterStepBrother
+            - BoyfriendGirlfriend
+            - DomesticPartner
+            - Unrelated
+            - ""
+          default: ""
+        livingOwnerOnDeed:
+          type: boolean
+          description: If the household owns the home is the person the owner or on the deed.
+        livingRentalOnLease:
+          type: boolean
+          description: If the household rental is renting, whether the person on the lease or not.
+        incomes:
+          type: array
+          description: A collection of one or more income objects.
+          minimum: 1
+          items:
+            $ref: "#/components/schemas/Income"
+        expenses:
+          type: array
+          description: Collection of one or more expense objects
+          minimum: 1
+          items:
+            $ref: "#/components/schemas/Expense"
+    Submission:
+      properties:
+        household:
+          type: array
+          items:
+            $ref: "#/components/schemas/Household"
+          minimum: 1
+          maximum: 1
+        person:
+          type: array
+          items:
+            $ref: "#components/schemas/Person"
+          minimum: 1
+          maximum: 8
+    Income:
+      properties:
+        amount:
+          type: number
+          format: double
+          description: The dollar amount of the income.
+        type:
+          type: string
+          description: The type of the income
+          enum:
+            - Wages
+            - SelfEmployment
+            - Unemployment
+            - CashAssistance
+            - ChildSupport
+            - DisabilityMedicaid
+            - SSI
+            - SSDependent
+            - SSDisability
+            - SSSurvivor
+            - SSRetirement
+            - NYSDisability
+            - Veteran
+            - Pension
+            - DeferredComp
+            - WorkersComp
+            - Alimony
+            - Boarder
+            - Gifts
+            - Rental
+            - Investment
+        frequency:
+          type: string
+          description: How often the income is received.
+          enum:
+            - Weekly
+            - Biweekly
+            - Monthly
+            - Semimonthly
+            - Yearly
+    Expense:
+      properties:
+        amount:
+          type: number
+          format: double
+          description: The dollar amount of the expense.
+        type:
+          type: string
+          description: The type of the expense (see below).
+          enum:
+            - "ChildCare"
+            - "ChildSupport"
+            - "DependentCare"
+            - "Rent"
+            - "Medical"
+            - "Heating"
+            - "Cooling"
+            - "Mortgage"
+            - "Utilities"
+            - "Telephone"
+            - "InsurancePremiums"
+            - ""
+
+        frequency:
+          type: string
+          description: How often the expense is paid
+          enum:
+            - "Weekly"
+            - "Biweekly"
+            - "Monthly"
+            - "Semimonthly"
+            - "Yearly"
+            - ""

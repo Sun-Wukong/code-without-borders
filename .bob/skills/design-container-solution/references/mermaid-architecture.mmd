@@ -1,0 +1,24 @@
+architecture-beta
+    
+    group network-stack(cloud)[network]
+    service caddy(server)[service] in network-stack
+    service coredns(server)[service] in network-stack
+    service external(internet)[network] in network-stack
+    
+    coredns:B -- T:caddy
+    external:B -- T:caddy
+    external:R -- L:coredns   
+    
+    group application-stack(cloud)[app]
+    service db(database)[Service] in application-stack
+    service disk1(disk)[volume] in application-stack
+    service disk2(disk)[volume] in application-stack
+    service jellyfin(server)[service] in application-stack
+    service internal(internet)[network] in application-stack
+
+    caddy:B -- T:internal
+    jellyfin:R -- L:internal
+    internal:R -- L:db
+
+    disk1:T -- B:jellyfin
+    disk2:T -- B:db

@@ -1,0 +1,22 @@
+mermaid
+%%{init: {'theme':'default'}}%%
+%%{flowchart}%%
+
+flowchart LR
+    subgraph external
+        Caddy[Caddy (web‑server)]
+    end
+    subgraph internal
+        Docuseal[Docuseal (web‑app)]
+        DB[PostgreSQL (database)]
+    end
+
+    %% Connections based on shared networks
+    Caddy -->|external ↔ internal| Docuseal
+    Docuseal -->|internal| DB
+
+    %% Volume indications
+    Caddy -.->|uses 1 volume| VolumeCaddy
+    Docuseal -.->|uses 1 volume| VolumeDocuseal
+    DB -.->|uses 2 volumes| VolumeDB1
+    DB -.->|uses 2 volumes| VolumeDB2

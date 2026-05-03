@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width">
+        <title>vue-practice</title>
+        <link href="style.css" rel="stylesheet" type="text/css"/>
+        <script src="https://unpkg.com/vue@next"></script>
+    </head>
+    <body>
+        <h1> User Interaction the VueJS way</h1>
+        <div id="textToReverse">
+            <p> {{text}} </p>
+            <button v-on:click="check-palindrome">
+                Check for Palindrome
+            </button>
+        </div>
+        <script src="script.js"></script>
+    </body>
+</html>

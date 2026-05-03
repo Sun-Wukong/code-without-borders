@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width">
+        <title>vue-practice</title>
+        <link href="style.css" rel="stylesheet" type="text/css"/>
+        <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+        <script src="https://unpkg.com/lodash@4.17.20/lodash.min.js"></script>
+    </head>
+    <body>
+        <h1>Looping through Arrays</h1>
+        <ul id="app">
+            <li v-for="(item, index) in items">
+                {{index + 1}} - {{ item.content }}
+            </li>
+        </ul>
+        <script src="script.js"></script>
+    </body>
+</html>

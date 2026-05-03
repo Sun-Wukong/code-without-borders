@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width">
+        <title>vue-directive-practice</title>
+        <link href="style.css" rel="stylesheet" type="text/css"/>
+        <script src="https://unpkg.com/vue@next"></script>
+    </head>
+    <body>
+        <h1>Reactive behavior via directives</h1>
+        <div id="to-hover-element">
+            <span v-bind:title="onHoverText">
+                Hover over this to see a reactive title
+            </span>
+        </div>
+        <script src="script.js"></script>
+    </body>
+</html>

@@ -1,0 +1,5 @@
+localhost:80 {
+	root * /vue/app
+	encode gzip
+	file_server browse
+}

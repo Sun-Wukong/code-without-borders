@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width">
+        <title>vue-practice</title>
+        <link href="style.css" rel="stylesheet" type="text/css"/>
+        <script src="https://unpkg.com/vue@next"></script>
+    </head>
+    <body>
+        <h1>Building lists</h1>
+        <div id="listToBuild">
+            <ul>
+                <li v-for="eachItem in listItems">
+                    {{ eachItem.item}}
+                </li>
+            </ul>
+        </div>
+        <script src="script.js"></script>
+    </body>
+</html>

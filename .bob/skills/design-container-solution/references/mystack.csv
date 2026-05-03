@@ -1,0 +1,4 @@
+service,purpose,language-framework,base-image,volumes,env-file,networks
+caddy,web-server,,caddy,1,,"external,internal"
+docuseal,web-app,,docuseal,1,,internal
+db,database,,postgres,2,,internal

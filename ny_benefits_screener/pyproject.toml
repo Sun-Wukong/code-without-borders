@@ -1,0 +1,24 @@
+[project]
+name = "ny_benefits_screener"
+version = "0.1.0"
+description = "ny-benefits-screener using crewAI"
+authors = [{ name = "Your Name", email = "you@example.com" }]
+requires-python = ">=3.10,<3.14"
+dependencies = [
+    "crewai[tools]==1.13.0"
+]
+
+[project.scripts]
+ny_benefits_screener = "ny_benefits_screener.main:run"
+run_crew = "ny_benefits_screener.main:run"
+train = "ny_benefits_screener.main:train"
+replay = "ny_benefits_screener.main:replay"
+test = "ny_benefits_screener.main:test"
+run_with_trigger = "ny_benefits_screener.main:run_with_trigger"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.crewai]
+type = "crew"
